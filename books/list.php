@@ -4,7 +4,13 @@ include_once '../auth/auth.php';
 //lay dc tat ca sach trong database
 include_once '../action/connectDB.php';
 
-$sql = "SELECT * FROM products_v";
+if (isset($_REQUEST['keyword'])) {
+    $keyword = $_REQUEST['keyword'];
+    $sql = "SELECT * FROM `products_v` WHERE name LIKE '%$keyword%' OR author LIKE '%$keyword%'";
+} else {
+    $sql = "SELECT * FROM `products_v`";
+}
+
 $stmt = $conn->query($sql);
 $books = $stmt->fetchAll();
 
@@ -66,8 +72,19 @@ $books = $stmt->fetchAll();
     <div class="col-md-12">
         <div class="card mt-5">
             <div class="card-header">
-                Books
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        Books
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <form class="form-inline my-2 my-lg-0" method="get">
+                            <input class="form-control mr-sm-2" name="keyword" type="search" placeholder="Search" aria-label="Search" value="<?php echo isset($_REQUEST['keyword']) ? $_REQUEST['keyword']: '' ?>">
+                            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                        </form>
+                    </div>
+                </div>
             </div>
+
             <div class="card-body">
                 <table class="table">
                     <thead class="thead-light">
